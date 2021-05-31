@@ -72,7 +72,7 @@ def generateLikeStr(likes, userName, detailed = False):
 @app.route('/')
 def index():
   if 'logged' in session.keys():
-    return redirect('/home') 
+    return redirect('/feed') 
   return redirect('/login')
 
 #Sign up page

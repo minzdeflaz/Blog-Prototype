@@ -2,7 +2,7 @@
 username = ''
 password = ''
 server = ''
-database = '-Proto'
+database = ''
 URI = 'mysql+pymysql://' + username + ':' + password + '@' + server + '/' + database
 
 #Secret Key
