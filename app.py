@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from validate_email import validate_email
+import setup
 
+#Configuration
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://bach:BachMinh06@localhost/Blog-Proto'
+app.config['SQLALCHEMY_DATABASE_URI'] = setup.URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.secret_key = "dontstealthis"
+app.secret_key = setup.Secret
 db = SQLAlchemy(app)
 
 #MySQL table Accounts
