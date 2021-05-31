@@ -3,7 +3,11 @@
 <title>{{post.userName}}'s Post</title>
 {% endblock %}
 {% block body %}
-
+<form action='/logout' method="POST">
+  <input type="submit" value="Log out">
+</form>
+<button onclick="document.location='/feed'">News Feed</button>
+</br>
 <div class="{{ post.id }}">
   <h3>{{ post.userName }}'s posted:</h3>
   <h4>{{ post.title }}</h4>

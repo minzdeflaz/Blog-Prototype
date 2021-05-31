@@ -9,6 +9,9 @@
 {% endblock %}
 {% block body %} 
 <button onclick="document.location='/home'">feed</button>
+{% if error != None %}
+<h3>{{ error }}</h3>
+{% endif %}
 <div class='createPost'>
   <form action='/createPost' method="POST">
     <input type="text" name="title" id="title" placeholder="title">

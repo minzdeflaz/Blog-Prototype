@@ -1,10 +1,15 @@
-{% extends 'base/html %}
+{% extends 'base.html' %}
 {% block head %}
 <title>Like List</title>
 {% endblock %}
 {% block body %}
+<form action='/logout' method="POST">
+  <input type="submit" value="Log out">
+</form>
+<button onclick="document.location='/feed'">News Feed</button>
+</br>
 <h3>People who liked this:</h3>
 {% for person in liked %}
-<p>person</p>
+<p>{{ person }}</p>
 {% endfor %}
 {% endblock %}

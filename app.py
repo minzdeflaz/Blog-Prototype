@@ -1,3 +1,4 @@
+from os import error
 from flask import Flask, render_template, request, redirect, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from validate_email import validate_email
@@ -89,13 +90,17 @@ def signup():
     try:
       db.session.add(newAccount)
       db.session.commit()
+      session.pop('signupEr', None)
       return redirect('/login')
     except:
-      return 'error'
+      session['signupEr'] = 'username or email existed, please use another one'
+      return redirect('signup')
 
   else:
     accounts = Accounts.query.order_by(Accounts.id).all()
-    return render_template('signup.html', accounts=accounts)
+    if 'signupEr' in session.keys():
+      return render_template('signup.html', accounts=accounts, error=session['signupEr'])
+    return render_template('signup.html', accounts=accounts, error=None)
   
 
 #login page
@@ -111,10 +116,14 @@ def login():
         session['username'] = typedUserName
         session['id'] = accountInfo.id
         session.modified=True
+        session.pop('loginEr', None)
         return redirect('/home')
-    return 'error'
+    session['loginEr'] = 'Wrong username or password'
+    return redirect('/login')
   else:
-    return render_template('login.html')
+    if 'loginEr' in session.keys():
+      return render_template('login.html', error=session['loginEr'])
+    return render_template('login.html', error=None)
 
 #home page
 @app.route('/home', methods=['GET','POST'])
@@ -169,16 +178,21 @@ def createPost():
     newTitle = request.form.get('title')
     newContent = request.form.get('content')
     if newContent == None or newContent == '':
-      return redirect('/createPost')
+      session['postEr'] = "Post can't be empty!"
+      return render_template('createPost.html', error=session['postEr'])
     newPost = Posts(content=newContent, accID=accId, title=newTitle, userName=userName)
     try:
       db.session.add(newPost)
       db.session.commit()
+      session.pop('postEr', None)
       return redirect('/home')
     except:
-      return 'error'
+      session['postEr'] = 'Error creating new post, please try again'
+      return render_template('createPost.html', error=session['postEr'])
   else:
-    return render_template('createPost.html')
+    if 'postEr' in session.keys():
+      return render_template('createPost.html', error=session['postEr'])
+    return render_template('createPost.html', error=None)
 
 #News feed page
 @app.route('/feed', methods=['GET', 'POST'])
@@ -207,7 +221,7 @@ def like(id):
       post.likeStr = generateLikeStr(likes, userName)
       db.session.commit()
     except:
-      return 'error'
+      return redirect('/feed')
   return redirect('/feed')
 
 #post detailed page
@@ -227,5 +241,7 @@ def likeList(id):
   likes = Likes.query.filter_by(postID=id).all()
   likeList = generateLikeStr(likes, session['username'], True)
   return render_template('likeList.html', liked=likeList)
+
+
 if __name__ == "__main__":
   app.run(debug=True)

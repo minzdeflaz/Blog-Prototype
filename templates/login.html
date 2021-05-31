@@ -4,6 +4,9 @@
 {% endblock %}
 {% block body %} 
 <button onclick="document.location='/signup'">Sign up</button>
+{% if error != None %}
+  <h3>{{ error }}</h3>
+{% endif %}
 <div class='login'>
   <form action='/login' method="POST">
     <input type="text" name="username" id="username" placeholder="Username">
