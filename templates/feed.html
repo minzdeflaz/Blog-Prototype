@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>{{ userName }}'s feed</title>
+<style>
+  p {
+    font-size: 15px;
+    line-height: 1.5;
+    max-height: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre-wrap;
+  }
+  .content {
+    text-decoration: none ;
+    color: black;
+  }
+  .likeStr {
+    color: black;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<form action='/logout' method="POST">
+  <input type="submit" value="Log out">
+</form>
+<button onclick="document.location='/home'">Home</button>
+</br>
+{% for post in posts %}
+<div class="{{ post.id }}">
+  <h3>{{ post.userName }}'s posted:</h3>
+  <h4>{{ post.title }}</h4>
+  <p><a href="/post/{{ post.id }}" class="content">{{ post.content }}</a></p>
+  <form action='/like/{{post.id}}' method="POST">
+    <input type="submit" value="Like">
+  </form>
+  <p><a href="/likeList/{{ post.id }}" class="likeStr">{{ post.likeStr }}</a></p>
+</div>
+{% endfor %}
+
+{% endblock %}

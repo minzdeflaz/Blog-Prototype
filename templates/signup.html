@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block head %}
+<title>Sign up</title>
+<script type="text/javascript">
+  function CheckIfOthers(val){
+   var element=document.getElementById('others');
+   if(val==='Others')
+     element.style.display='inline';
+   else  
+     element.style.display='none';
+  }
+  
+  </script> 
+{% endblock %}
+{% block body %} 
+<button onclick="document.location='/login'">Log in</button>
+</br>
+<div class="signup">
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Username</th>
+      <th>Password</th>
+      <th>Email</th>
+      <th>PhoneNumber</th>
+      <th>Occupation</th>
+    </tr>
+    {% for account in accounts %}
+      <tr>
+        <td>{{ account.name }}</td>
+        <td>{{ account.userName }}</td>
+        <td>{{ account.password }}</td>
+        <td>{{ account.email}}</td>
+        <td>{{ account.phoneNumber }}</td>
+        <td>{{ account.occupation }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  <form action="/signup" method="POST">
+    <input type="text" name="name" id="name" placeholder="Name">
+    <input type="text" name="username" id="username" placeholder="Username">
+    <input type="text" name="password" id="password" placeholder="Password">
+    <input type="text" name="email" id="email" placeholder="Email">
+    <input type="text" name="phonenumber" id="phonenumber" placeholder="PhoneNumber">
+    <select name="occupation" id="occupation" onchange="CheckIfOthers(this.value)">
+      <option value="Student">Student</option>
+      <option value="Teacher">Teacher</option>
+      <option >Others</option>
+    </select>
+    <input type="text" name="others" id="others" style='display:none;' placeholder="Occupation"/>
+    <input type="submit" value="Create account">
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block head %}
+<title>{{post.userName}}'s Post</title>
+{% endblock %}
+{% block body %}
+
+<div class="{{ post.id }}">
+  <h3>{{ post.userName }}'s posted:</h3>
+  <h4>{{ post.title }}</h4>
+  <p>{{ post.content }}</p>
+  <p><a href="/likeList/{{ post.id }}" class="likeStr">{{ post.likeStr }}</a></p>
+</div>
+
+{% endblock %}

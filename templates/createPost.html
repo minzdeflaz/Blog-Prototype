@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block head %}
+<title>Create Post</title>
+<style>
+  .content {
+    white-space: pre-wrap;
+  }
+</style>
+{% endblock %}
+{% block body %} 
+<button onclick="document.location='/home'">feed</button>
+<div class='createPost'>
+  <form action='/createPost' method="POST">
+    <input type="text" name="title" id="title" placeholder="title">
+    </br>
+    <textarea class="content" name="content" id="content" rows="10" cols="50" placeholder="What's on your mind?"></textarea>
+    <input type="submit" value="Post">
+  </form>
+</div>
+{% endblock %}
