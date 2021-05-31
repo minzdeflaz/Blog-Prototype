@@ -1,4 +1,3 @@
-from os import error
 from flask import Flask, render_template, request, redirect, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from validate_email import validate_email
