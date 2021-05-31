@@ -75,7 +75,7 @@ def index():
     return redirect('/home') 
   return redirect('/login')
 
-#Sign in page
+#Sign up page
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
   if request.method == "POST":
@@ -104,7 +104,7 @@ def signup():
     return render_template('signup.html', accounts=accounts, error=None)
   
 
-#login page
+#Login page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
   if request.method == "POST":
@@ -126,7 +126,7 @@ def login():
       return render_template('login.html', error=session['loginEr'])
     return render_template('login.html', error=None)
 
-#home page
+#Home page
 @app.route('/home', methods=['GET','POST'])
 def home():
   accID = session['id']
@@ -142,7 +142,7 @@ def home():
       db.session.commit()
   return render_template('home.html', userName = userName, posts = posts)
 
-#update user's info if not provided enough info
+#Update user's info if not provided enough info
 @app.route('/updateInfo', methods=['GET', 'POST'])
 def updateInfo():
   userName = session['username']
@@ -162,7 +162,7 @@ def updateInfo():
   else:
     return render_template('updateInfo.html', account = accountInfo)
 
-#logout route
+#Log out route
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
   session.pop('logged', None)
@@ -170,7 +170,7 @@ def logout():
   session.pop('username', None)
   return redirect('/login')
 
-#create post page
+#Create new post page
 @app.route('/createPost', methods=['GET', 'POST'])
 def createPost():
   accId = session['id']
@@ -206,7 +206,7 @@ def feed():
       db.session.commit()
   return render_template('feed.html', posts=posts)
 
-#add new like
+#Add new like
 @app.route('/like/<int:id>', methods=['GET', 'POST'])
 def like(id):
   accID = session['id']
@@ -225,7 +225,7 @@ def like(id):
       return redirect('/feed')
   return redirect('/feed')
 
-#post detailed page
+#Post detailed page
 @app.route('/post/<int:id>', methods=['GET', 'POST'])
 def post(id):
   post = Posts.query.filter_by(id=id).first()
