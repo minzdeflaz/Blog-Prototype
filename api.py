@@ -64,7 +64,6 @@ postFields = {
   'id': fields.Integer,
 	'title': fields.String,
 	'content': fields.String,
-	'likeStr': fields.String,
 	'userName': fields.String,
   'accID': fields.Integer
 }
