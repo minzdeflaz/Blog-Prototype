@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, marshal_with, Resource, reqparse, abort, fields
-
+from sqlalchemy import desc
 db = SQLAlchemy()
 api = Api()
 
@@ -88,7 +88,6 @@ likeFields = {
 }
 
 
-
 #Query all from Accounts table 
 class AccountQueryAll(Resource):
   @marshal_with(accountFields)
@@ -114,8 +113,8 @@ class AccountQueryByUserName(Resource):
     if not result:
       abort(404, message="Account not found")
     return result
-api.add_resource(AccountQueryByUserName,"/account/<string:userName>")
 
+api.add_resource(AccountQueryByUserName,"/account/<string:userName>")
 
 #Query Accounts table with id
 class AccountQueryByID(Resource):
@@ -132,7 +131,7 @@ class AccountQueryByID(Resource):
     if args['occupation']:
       result.occupation = args['occupation']
     db.session.commit()
-    return result
+    return result, 200
 
 api.add_resource(AccountQueryByID,"/account/<int:id>")
 
@@ -140,7 +139,7 @@ api.add_resource(AccountQueryByID,"/account/<int:id>")
 class PostQueryAll(Resource):
   @marshal_with(postFields)
   def get(self):
-    result = Posts.query.order_by(Posts.id).all()
+    result = Posts.query.order_by(desc(Posts.id)).all()
     if not result:
       abort(404, message="No posts available")
     return result
@@ -166,12 +165,23 @@ class PostQueryByID(Resource):
 
 api.add_resource(PostQueryByID,"/post/<int:id>")
 
+#Query Posts table with user name
+class PostQueryByUserName(Resource):
+  @marshal_with(postFields)
+  def get(self, userName):
+    result = Posts.query.order_by(desc(Posts.id)).filter_by(userName=userName).all()
+    if not result:
+      abort(404, message="You haven't posted anything.")
+    return result
+
+api.add_resource(PostQueryByUserName,"/post/<string:userName>")
+
 class LikeQueryByPostID(Resource):
   @marshal_with(likeFields)
   def get(self, postID):
     result = Likes.query.filter_by(postID = postID).all()
     if not result:
-      abort(404, message="No likes available")
+      abort(404, message="No one liked this post yet.")
     return result
   
   @marshal_with(likeFields)
@@ -179,7 +189,7 @@ class LikeQueryByPostID(Resource):
     args = likePutArgs.parse_args()
     result = Likes.query.filter_by(postID = postID, accID=args['accID']).first()
     if result:
-      abort(409, message="Like already existed")
+      abort(409, message="You already liked this post.")
     like = Likes(postID=postID, accID=args['accID'], userName=args['userName'] )
     db.session.add(like)
     db.session.commit()
