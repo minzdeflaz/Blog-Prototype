@@ -1,17 +1,10 @@
-{% extends 'base.html' %}
-{% block head %}
+{% extends 'base.html' %} {% block head %}
 <title>Log in</title>
-{% endblock %}
-{% block body %} 
+{% endblock %} {% block body %}
 <button onclick="document.location='/signup'">Sign up</button>
-{% if error != None %}
-  <h3>{{ error }}</h3>
-{% endif %}
-<div class='login'>
-  <form action='/login' method="POST">
-    <input type="text" name="username" id="username" placeholder="Username">
-    <input type="text" name="password" id="password" placeholder="Password">
-    <input type="submit" value="Log in">
-  </form>
+<div class="login">
+  <input type="text" name="userName" id="userName" placeholder="Username" />
+  <input type="text" name="password" id="password" placeholder="Password" />
+  <input type="submit" value="Log in" onclick="logIn()" />
 </div>
 {% endblock %}

@@ -9,15 +9,10 @@
 {% endblock %}
 {% block body %} 
 <button onclick="document.location='/home'">Home</button>
-{% if error != None %}
-<h3>{{ error }}</h3>
-{% endif %}
 <div class='createPost'>
-  <form action='/createPost' method="POST">
     <input type="text" name="title" id="title" placeholder="Title">
     </br>
     <textarea class="content" name="content" id="content" rows="10" cols="50" placeholder="What's on your mind?"></textarea>
-    <input type="submit" value="Post">
-  </form>
+    <input type="submit" value="Post" onclick="createPost()">
 </div>
 {% endblock %}

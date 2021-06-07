@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
+
 {% block head %}
+<title>{{ userName }}'s feed</title>
 <style>
   p {
     font-size: 15px;
     line-height: 1.5;
     max-height: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre-wrap;
   }
   .content {
     text-decoration: none ;
@@ -15,12 +20,15 @@
   }
 </style>
 {% endblock %}
+
 {% block body %}
 <input type="submit" value="Log out" onclick="logOut()"> 
 </br>
+<button onclick="document.location='/createPost'">Create new post!</button>
+</br>
 <button onclick="document.location='/home'">Home</button>
 </br>
-<button onclick="document.location='/wall'" >Personal Page</button>
-</br>
-<script>postDetailed();</script>
+<script>wall();</script>
+
+
 {% endblock %}
