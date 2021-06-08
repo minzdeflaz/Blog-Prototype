@@ -33,5 +33,5 @@ Got It would like to build a blog where people can register accounts, write blog
 # Requirements
 - [x] You need to build RESTful APIs for this blog site using Python, Flask, and MySQL.</br>
 - [x] The frontend site is NOT required.</br>
-- [ ] Data must be returned to the client in JSON format.</br>
+- [x] Data must be returned to the client in JSON format.</br>
 - [x] The source code needs to be pushed to GitHub with installation instructions.</br>
