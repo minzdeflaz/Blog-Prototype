@@ -1,21 +1,33 @@
 //Change baseURL before running
 const baseURL = "http://localhost:5000";
+//Add your facebook appID
+const fbAppID = '1391529697889548';
 
+/* ---------------------------------------------------------- */
+
+// Common functions start here
+
+//Create html element for posts data GET from database.
 function generatePost(id, postTitle, postContent, likeStr, liked = false, userName = '') {
+  //div element
   let div = document.createElement('div');
   div.className = "post" + id; 
   
+  //Username of post owner
   if (userName !== '') {
     let user = document.createElement('h3');
     let userText = document.createTextNode(userName + " posted:");
     user.append(userText);
     div.append(user);
   }
+
+  //Post title
   let title = document.createElement('h4');
   let titleText = document.createTextNode(postTitle);
   title.append(titleText);
   div.append(title);
 
+  //Post content
   let content = document.createElement('p');
   let link = document.createElement('a');
   let contentText = document.createTextNode(postContent);
@@ -25,6 +37,7 @@ function generatePost(id, postTitle, postContent, likeStr, liked = false, userNa
   content.append(link)
   div.append(content);
 
+  //Like button
   let like = document.createElement('input');
   like.type = 'submit';
   if (liked === false)
@@ -35,6 +48,7 @@ function generatePost(id, postTitle, postContent, likeStr, liked = false, userNa
   like.onclick = () => {addLike(id);};
   div.append(like);
 
+  //Like string 
   let likeString = document.createElement('p');
   let likeLink = document.createElement('a');
   let likeText = document.createTextNode(likeStr);
@@ -49,6 +63,7 @@ function generatePost(id, postTitle, postContent, likeStr, liked = false, userNa
   document.body.append(div);
 }
 
+//Function to query all like information of post
 function queryLikes(postID) {
   let url = baseURL + '/like/' + postID;
   let request = new XMLHttpRequest();
@@ -57,6 +72,7 @@ function queryLikes(postID) {
   return request.responseText;
 }
 
+//Create like string for each post
 function generateLikeStr(likes, userName, detailed = false) {
   let likeList = ['You'];
   let you = false;
@@ -68,6 +84,8 @@ function generateLikeStr(likes, userName, detailed = false) {
   }
   if (you === false) 
     likeList.shift();
+  
+  //Return like string
   if (detailed === false) {
     if (likeList.length === 1) 
       return likeList[0] + ' liked this post.'
@@ -76,12 +94,25 @@ function generateLikeStr(likes, userName, detailed = false) {
     else
       return likeList[0] + ', ' + likeList[1] + ', and '+ (likeList.length - 2).toString() + ' other people liked this post.'
   }
+  //Return list of people who liked if demanded
   else
     return likeList;
 }
+
+//Go back to previous page
 function goBack() {
   window.location.replace(document.referrer);
 }
+
+//Set new Cookie
+function setCookie(cookieName, cookieValue) {
+  let d = new Date();
+  d.setTime(d.getTime() + (5*24*60*60*1000));
+  let expires = "expires=" + d;
+  document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/; SameSite=None; Secure";
+}
+
+//Get cookie 
 function getCookie(cookieName) {
   const cookieValue = document.cookie
     .split('; ')
@@ -90,13 +121,8 @@ function getCookie(cookieName) {
     return cookieValue.split("=")[1];
   return "";
 }
-function setCookie(cookieName, cookieValue) {
-  let d = new Date();
-  d.setTime(d.getTime() + (5*24*60*60*1000));
-  let expires = "expires=" + d;
-  document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/; SameSite=None; Secure";
-}
 
+//Delete Cookie
 function deleteCookie(cookieName) {
   let d = new Date()
   d.setTime(d.getTime() - 1)
@@ -104,6 +130,7 @@ function deleteCookie(cookieName) {
   document.cookie = cookieName + "=;" + expires + ";path=/"
 }
 
+//Display text box to type Occupation
 function CheckIfOthers(val) {
   let element=document.getElementById('others');
   if (val === 'Others')
@@ -112,7 +139,36 @@ function CheckIfOthers(val) {
     element.style.display = 'none';
  }  
 
+//Display info from cookies
+function displayInfo() {
+  emailElement = document.getElementById('email');
+  if (emailElement !== null) {
+    emailElement .value = getCookie('email');
+    deleteCookie('email');
+  }
+  document.getElementById('name').value = getCookie('name');
+  document.getElementById('phoneNumber').value = getCookie('phoneNumber');
+  occupation = document.getElementById('occupation');
+  occupationValue = getCookie('occupation');
+  if (occupationValue === 'Student' || getCookie('occupation') === 'Teacher')
+    occupation.value = occupationValue
+  else if (occupationValue !== '' && occupation !== null) {
+    occupation.value = 'Others';
+    others = document.getElementById('others');
+    others.value = occupationValue;
+    others.style.display = 'inline';
+  }
+  deleteCookie('name');
+  deleteCookie('phoneNumber');
+  deleteCookie('occupation');
+}
+/* ---------------------------------------------------------- */
+
+//Functions for each html page start here
+
+//Processing data from sign up page
  function signUp() {
+  //Getting data from html
   const output = {
     name: '',
     userName: null,
@@ -134,7 +190,7 @@ function CheckIfOthers(val) {
       output[prop] = other.value ;
   }
   myJson = JSON.stringify(output);
-
+  //Calling api to put new account info to database
   url = baseURL + '/account';
   let request = new XMLHttpRequest();
   request.open('PUT', url, true);
@@ -156,7 +212,9 @@ function CheckIfOthers(val) {
   request.send(myJson);
 }
 
+//Processing data in log in page
 function logIn() {
+  //Take username and password from html input
   const input = {
     userName: '',
     password: ''
@@ -165,6 +223,7 @@ function logIn() {
     element = document.getElementById(prop);
     input[prop] = element.value;
   }
+  //Call api to check if username and password are correct
   url = baseURL +'/account/' + input.userName;
   let request = new XMLHttpRequest();
   request.open('GET', url, true);
@@ -173,6 +232,7 @@ function logIn() {
     let account = JSON.parse(request.responseText);
     if (request.readyState == 4 && request.status == "200") {
       if (account.password === input.password) {
+        //If username and password are correct
         setCookie("userName", account.userName);
         setCookie("id", account.id);
         let updateInfoNeeded = false;
@@ -187,8 +247,10 @@ function logIn() {
         else
           window.location.href = '/home';
       } else
-        window.alert("Wrong password!")
+          //If username or password is wrong
+          window.alert("Wrong password!")
     } else {
+      //Errors handling
       if (typeof account.message !== 'object')
         window.alert(account.message);
       else {
@@ -200,7 +262,9 @@ function logIn() {
   request.send();
 }
 
+//Proccessing data for home page
 function home() {
+  //Calling api to render posts
   userName = getCookie('userName')
   document.title = userName + "'s homepage";
   url = baseURL + '/post';
@@ -210,6 +274,7 @@ function home() {
   request.onload = function () {
     let posts = JSON.parse(request.responseText);
     if (request.readyState == 4 && request.status == "200") {
+      //Render posts
       for (let i in posts) {
         let likes = JSON.parse(queryLikes(posts[i].id));
         let newLikeStr = "No one liked this post yet."
@@ -219,6 +284,7 @@ function home() {
         generatePost(posts[i].id, posts[i].title, posts[i].content, newLikeStr, newLikeStr.includes("You"), posts[i].userName);
       }
     } else {
+      //Errors handling
       if (typeof posts.message !== 'object')
         window.alert(posts.message);
       else{
@@ -230,7 +296,9 @@ function home() {
   request.send();
 }
 
+//Processing data for wall page
 function wall() {
+  //Calling api
   userName = getCookie('userName')
   document.title = userName + "'s personal page";
   url = baseURL + '/post/' + userName;
@@ -241,6 +309,7 @@ function wall() {
     let posts = JSON.parse(request.responseText);
     if (request.readyState == 4 && request.status == "200") {
       for (let i in posts) {
+        //Render post
         let likes = JSON.parse(queryLikes(posts[i].id));
         let newLikeStr = "No one liked this post yet."
         if (likes.length !== undefined) {
@@ -249,6 +318,7 @@ function wall() {
         generatePost(posts[i].id, posts[i].title, posts[i].content, newLikeStr, newLikeStr.includes("You"));
       }
     } else {
+      //Errors handling
       if (typeof posts.message !== 'object')
         window.alert(posts.message);
       else{
@@ -260,7 +330,9 @@ function wall() {
   request.send();
 }
 
+//Processing data for create post page
 function createPost() {
+  //Getting input from html
   const output = {
     userName: getCookie('userName'),
     accID: getCookie('id'),
@@ -275,12 +347,13 @@ function createPost() {
     output.content = postContent
 
   myJson = JSON.stringify(output);
-
+  //Calling api to put post data
   url = baseURL + '/post';
   let request = new XMLHttpRequest();
   request.open('PUT', url, true);
   request.setRequestHeader('Content-type','application/json; charset=utf-8');
   request.onload = function () {
+    //Post rendering and Errors handling
     let post = JSON.parse(request.responseText);
     if (request.readyState == 4 && request.status == "201") {
       window.alert('Posted!');
@@ -297,10 +370,11 @@ function createPost() {
   request.send(myJson);
 }
 
+//Full post page
 function postDetailed() {
   let postID = window.location.href.split('/').pop();
   url = baseURL + '/post/' + postID;
-
+  //Call api to get full post
   let request = new XMLHttpRequest();
   request.open('GET', url, true);
   request.setRequestHeader('Content-type','application/json; charset=utf-8');
@@ -325,6 +399,7 @@ function postDetailed() {
   request.send();
 }
 
+//Full list of people who like
 function likeList() {
   let postID = window.location.href.split('/').pop()
   let likes = JSON.parse(queryLikes(postID));
@@ -337,6 +412,7 @@ function likeList() {
   }
 }
 
+//Add new like to posts
 function addLike(postID) {
   const output = {
     postID: postID,
@@ -344,7 +420,7 @@ function addLike(postID) {
     userName: getCookie('userName')
   }
   myJson = JSON.stringify(output);
-
+  //Call api to put new like
   url = baseURL + '/like/' + postID;
   let request = new XMLHttpRequest();
   request.open('PUT', url, true);
@@ -352,6 +428,7 @@ function addLike(postID) {
   request.onload = function () {
     let like = JSON.parse(request.responseText);
     if (request.readyState == 4 && request.status == "201") {
+      //Render liked button and Errors handling
       likeButton = document.getElementById('likeButton' + postID)
       likeButton.value = 'Liked';
       likeString = document.getElementById('likeStr' + postID);
@@ -369,30 +446,10 @@ function addLike(postID) {
   }
   request.send(myJson);
 }
-function displayInfo() {
-  emailElement = document.getElementById('email');
-  if (emailElement !== null) {
-    emailElement .value = getCookie('email');
-    deleteCookie('email');
-  }
-  document.getElementById('name').value = getCookie('name');
-  document.getElementById('phoneNumber').value = getCookie('phoneNumber');
-  occupation = document.getElementById('occupation');
-  occupationValue = getCookie('occupation');
-  if (occupationValue === 'Student' || getCookie('occupation') === 'Teacher')
-    occupation.value = occupationValue
-  else if (occupationValue !== '' && occupation !== null) {
-    occupation.value = 'Others';
-    others = document.getElementById('others');
-    others.value = occupationValue;
-    others.style.display = 'inline';
-  }
-  deleteCookie('name');
-  deleteCookie('phoneNumber');
-  deleteCookie('occupation');
-}
 
+//Update account infomation page
 function updateInfo() {
+  //Take input from html
   const output = {
     name: '',
     phoneNumber: '',
@@ -412,6 +469,7 @@ function updateInfo() {
     else if (other.value !== "Others" && other.value !== "")
       output[prop] = other.value ;
   }
+  //Call api to PATCH account infomation
   myJson = JSON.stringify(output);
   url = baseURL + '/account/' + getCookie('id');
   let request = new XMLHttpRequest();
@@ -423,6 +481,7 @@ function updateInfo() {
       window.alert('Update Information Successfully!');
       window.location.href = '/home';
     } else {
+      //Errors handling
       if (typeof account.message !== 'object')
         window.alert(account.message);
       else {
@@ -434,6 +493,7 @@ function updateInfo() {
   request.send(myJson);
 }
 
+//Log out and delete cookies
 function logOut() {
   deleteCookie('userName');
   deleteCookie('id');
@@ -442,9 +502,16 @@ function logOut() {
   window.location.href = '/login';
 }
 
+
+/* ---------------------------------------------------------- */
+//Facebook and Google Sign In 
+
+//Sign in with google
 function onSignInGG(googleUser) {
+  //Get information from google account
   let profile = googleUser.getBasicProfile();
   let email = profile.getEmail();
+  //Call api to get account information from database
   url = baseURL + '/account/email/' + email;
   let request = new XMLHttpRequest();
   request.open('GET', url, true);
@@ -452,24 +519,26 @@ function onSignInGG(googleUser) {
   request.onload = function () {
     let account = JSON.parse(request.responseText);
     if (request.readyState == 4 && request.status == "200") {
+      //Matching google account and webpage account
       setCookie("userName", account.userName);
-        setCookie("id", account.id);
-        let updateInfoNeeded = false;
-        for (let prop in account) {
-          if (prop === 'name' || prop === 'phoneNumber' || prop === 'occupation')
-            setCookie(prop, account[prop]);
-            if (account[prop] === '')
-              updateInfoNeeded = true;
-        }
-        if (updateInfoNeeded === true)
-          window.location.href = '/updateInfo';
-        else {
-          deleteCookie('name');
-          deleteCookie('phoneNumber');
-          deleteCookie('occupation');
-          window.location.href = '/home';
-        }
+      setCookie("id", account.id);
+      let updateInfoNeeded = false;
+      for (let prop in account) {
+        if (prop === 'name' || prop === 'phoneNumber' || prop === 'occupation')
+          setCookie(prop, account[prop]);
+          if (account[prop] === '')
+            updateInfoNeeded = true;
+      }
+      if (updateInfoNeeded === true)
+        window.location.href = '/updateInfo';
+      else {
+        deleteCookie('name');
+        deleteCookie('phoneNumber');
+        deleteCookie('occupation');
+        window.location.href = '/home';
+      }
     } else {
+      //Error handling
       if (typeof account.message !== 'object')
         window.alert(account.message);
       else {
@@ -484,7 +553,9 @@ function onSignInGG(googleUser) {
   request.send();
 }
 
+//Sign up with google
 function onSignUpGG(googleUser) {
+  //Get account info from google
   let profile = googleUser.getBasicProfile();
   let email = profile.getEmail();
   url = baseURL + '/account/email/' + email;
@@ -492,6 +563,7 @@ function onSignUpGG(googleUser) {
   request.open('GET', url, true);
   request.setRequestHeader('Content-type','application/json; charset=utf-8');
   request.onload = function () {
+    //Matching google account and webpage account
     let account = JSON.parse(request.responseText);
     if (request.readyState == 4 && request.status == "200") {
       setCookie("userName", account.userName);
@@ -512,6 +584,7 @@ function onSignUpGG(googleUser) {
         window.location.href = '/home';
       }
     } else {
+      //If account doesn't exist process to sign up new account for user
       setCookie('email', email);
       setCookie('name', profile.getName());
       displayInfo();
@@ -519,6 +592,7 @@ function onSignUpGG(googleUser) {
   }
   request.send();
 }
+//Sign out of google
 function signOutGG() {
   var auth2 = gapi.auth2.getAuthInstance();
   auth2.signOut();
@@ -530,7 +604,7 @@ function statusChangeCallback(response, logInPage) {  // Called with the results
       onSignInFB();
     else
       onSignUpFB();  
-  }                                  // Not logged into your webpage or we are unable to tell.
+  }                                        // Not logged into your webpage or we are unable to tell.
 }
 
 
@@ -548,10 +622,10 @@ function checkLoginStateSignUp() {               // Called when a person is fini
 
 window.fbAsyncInit = function() {
   FB.init({
-    appId      : '1391529697889548',
+    appId      : fbAppID,
     cookie     : true,                     // Enable cookies to allow the server to access the session.
     xfbml      : true,                     // Parse social plugins on this webpage.
-    version    : 'v10.0'           // Use this Graph API version for this call.
+    version    : 'v10.0'                   // Use this Graph API version for this call.
   });
 
 
@@ -560,9 +634,12 @@ window.fbAsyncInit = function() {
   });
 };
 
-function onSignInFB() {                      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
+//Sign in with facebook
+function onSignInFB() {              
+  //Get info from facebook account        
   FB.api('/me', 'GET',{"fields":"name,email"}, function(response) {
     let email = response.email;
+    //Call api to get account info from database
     url = baseURL + '/account/email/' + email;
     let request = new XMLHttpRequest();
     request.open('GET', url, true);
@@ -570,24 +647,26 @@ function onSignInFB() {                      // Testing Graph API after login.  
     request.onload = function () {
       let account = JSON.parse(request.responseText);
       if (request.readyState == 4 && request.status == "200") {
+        //Matching facebook account with website account
         setCookie("userName", account.userName);
-          setCookie("id", account.id);
-          let updateInfoNeeded = false;
-          for (let prop in account) {
-            if (prop === 'name' || prop === 'phoneNumber' || prop === 'occupation')
-              setCookie(prop, account[prop]);
-              if (account[prop] === '')
-                updateInfoNeeded = true;
-          }
-          if (updateInfoNeeded === true)
-            window.location.href = '/updateInfo';
-          else {
-            deleteCookie('name');
-            deleteCookie('phoneNumber');
-            deleteCookie('occupation');
-            window.location.href = '/home';
+        setCookie("id", account.id);
+        let updateInfoNeeded = false;
+        for (let prop in account) {
+          if (prop === 'name' || prop === 'phoneNumber' || prop === 'occupation')
+            setCookie(prop, account[prop]);
+            if (account[prop] === '')
+              updateInfoNeeded = true;
+        }
+        if (updateInfoNeeded === true)
+          window.location.href = '/updateInfo';
+        else {
+          deleteCookie('name');
+          deleteCookie('phoneNumber');
+          deleteCookie('occupation');
+          window.location.href = '/home';
           }
       } else {
+        //Errors handling
         if (typeof account.message !== 'object')
           window.alert(account.message);
         else {
@@ -603,9 +682,12 @@ function onSignInFB() {                      // Testing Graph API after login.  
   });
 }
 
+//Sign up with facebook
 function onSignUpFB() {
+  //Get account info from facebook
   FB.api('/me', 'GET',{"fields":"name,email"}, function(response) {
     let email = response.email;
+    //Call api to get account info from database
     url = baseURL + '/account/email/' + email;
     let request = new XMLHttpRequest();
     request.open('GET', url, true);
@@ -613,6 +695,7 @@ function onSignUpFB() {
     request.onload = function () {
       let account = JSON.parse(request.responseText);
       if (request.readyState == 4 && request.status == "200") {
+        //Matching facebook account and website account
         setCookie("userName", account.userName);
         setCookie("id", account.id);
         let updateInfoNeeded = false;
@@ -631,6 +714,7 @@ function onSignUpFB() {
           window.location.href = '/home';
         }
       } else {
+        //If account doesn't exist, process to sign up new account for user.
         setCookie('email', email);
         setCookie('name', response.name);
         displayInfo();
@@ -640,6 +724,7 @@ function onSignUpFB() {
   });
 }
 
+//Log out of FB
 function logOutFB() {
     FB.logout();
 }
