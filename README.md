@@ -1,7 +1,7 @@
 # Blog-Prototype
 ⚓This repository is my entrance exam to Got It, Inc.
 
-The instruction is listed as follow:
+The instructions are listed as follow:
 # Introduction
 Got It would like to build a blog where people can register accounts, write blog posts, and interact with each other. This blog has the following features.
 # Accounts
