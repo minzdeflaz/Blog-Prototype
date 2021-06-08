@@ -3,6 +3,8 @@
 <title>Sign up</title>
 {% endblock %}
 {% block body %} 
+
+
 <button onclick="document.location='/login'">Log in</button>
 </br>
 <div class="signUp">
@@ -14,9 +16,13 @@
   <select name="occupation" id="occupation" onchange="CheckIfOthers(this.value)">
     <option value="Student">Student</option>
     <option value="Teacher">Teacher</option>
-    <option >Others</option>
+    <option>Others</option>
   </select>
   <input type="text" name="occupation" id="others" style='display:none;' placeholder="Occupation"/>
   <input type="submit" value="Create account" onclick="signUp()">
+  <div class="g-signin2" data-onsuccess="onSignUpGG"></div>
+  <fb:login-button scope="public_profile, email" onlogin="checkLoginStateSignUp();">
+  </fb:login-button>
+  <script>displayInfo();</script>
 </div>
 {% endblock %}

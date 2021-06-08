@@ -1,10 +1,20 @@
-{% extends 'base.html' %} {% block head %}
+{% extends 'base.html' %}
+{% block head %}
 <title>Log in</title>
-{% endblock %} {% block body %}
+{% endblock %}
+{% block body %}
+
 <button onclick="document.location='/signup'">Sign up</button>
 <div class="login">
   <input type="text" name="userName" id="userName" placeholder="Username" />
   <input type="password" name="password" id="password" placeholder="Password" />
   <input type="submit" value="Log in" onclick="logIn()" />
 </div>
+
+<div class="g-signin2" data-onsuccess="onSignInGG"></div>
+<fb:login-button scope="public_profile, email" onlogin="checkLoginStateLogIn();">
+</fb:login-button>
+
+
+<!-- Load the JS SDK asynchronously -->
 {% endblock %}

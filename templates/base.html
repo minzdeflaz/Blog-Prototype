@@ -4,10 +4,21 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-signin-client_id" content="444422078368-rc3c42ef9p27r8tpb62s2a4osgq9pl9v.apps.googleusercontent.com">
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     {% block head %}{% endblock %}
   </head>
   <body>
+    <script>
+    function onLoad() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    }
+    </script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
     {% block body %}{% endblock %}
+
   </body>
 </html>

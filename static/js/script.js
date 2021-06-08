@@ -1,5 +1,5 @@
 //Change baseURL before running
-const baseURL = "http://localhost:5000"
+const baseURL = "http://localhost:5000";
 
 function generatePost(id, postTitle, postContent, likeStr, liked = false, userName = '') {
   let div = document.createElement('div');
@@ -115,17 +115,19 @@ function CheckIfOthers(val) {
  function signUp() {
   const output = {
     name: '',
-    userName: '',
-    password: '',
-    email: '',
+    userName: null,
+    password: null,
+    email: null,
     phoneNumber: '',
     occupation: ''
   }
   other = document.getElementById('others');
   for (let prop in output) {
     element = document.getElementById(prop);
-    if (prop !== "occupation") 
-      output[prop] = element.value;
+    if (prop !== "occupation") {
+      if (element.value !== '')
+        output[prop] = element.value;
+    }
     else if (element.value !== "Others")
       output[prop] = element.value;
     else if (other.value !== "Others" && other.value !== "")
@@ -143,7 +145,12 @@ function CheckIfOthers(val) {
       window.alert("Account created");
       window.location.href = "/login";
     } else {
-      window.alert(account.message);
+      if (typeof account.message !== 'object')
+        window.alert(account.message);
+      else {
+        for (let prop in account.message)
+          window.alert(account.message[prop]);
+      }
     }
   }
   request.send(myJson);
@@ -172,7 +179,7 @@ function logIn() {
         for (let prop in account) {
           if (prop === 'name' || prop === 'phoneNumber' || prop === 'occupation')
             setCookie(prop, account[prop]);
-            if (account[prop] === '')
+            if (account[prop] === '' || account[prop] === null)
               updateInfoNeeded = true;
         }
         if (updateInfoNeeded === true)
@@ -182,7 +189,12 @@ function logIn() {
       } else
         window.alert("Wrong password!")
     } else {
-      window.alert(account.message);
+      if (typeof account.message !== 'object')
+        window.alert(account.message);
+      else {
+        for (let prop in account.message)
+          window.alert(account.message[prop]);
+      }
     }
   }
   request.send();
@@ -207,7 +219,12 @@ function home() {
         generatePost(posts[i].id, posts[i].title, posts[i].content, newLikeStr, newLikeStr.includes("You"), posts[i].userName);
       }
     } else {
-      window.alert(posts.message);
+      if (typeof posts.message !== 'object')
+        window.alert(posts.message);
+      else{
+        for (let prop in posts.message)
+          window.alert(post.message[prop]);
+      }
     }
   }
   request.send();
@@ -232,7 +249,12 @@ function wall() {
         generatePost(posts[i].id, posts[i].title, posts[i].content, newLikeStr, newLikeStr.includes("You"));
       }
     } else {
-      window.alert(posts.message);
+      if (typeof posts.message !== 'object')
+        window.alert(posts.message);
+      else{
+        for (let prop in posts.message)
+          window.alert(post.message[prop]);
+      }
     }
   }
   request.send();
@@ -242,9 +264,16 @@ function createPost() {
   const output = {
     userName: getCookie('userName'),
     accID: getCookie('id'),
-    title: document.getElementById('title').value,
-    content: document.getElementById('content').value
+    title: null,
+    content: null
   }
+  postTitle = document.getElementById('title').value;
+  postContent = document.getElementById('content').value;
+  if (postTitle !== '') 
+    output.title = postTitle
+  if (postContent !== '') 
+    output.content = postContent
+
   myJson = JSON.stringify(output);
 
   url = baseURL + '/post';
@@ -257,7 +286,12 @@ function createPost() {
       window.alert('Posted!');
       window.location.replace(document.referrer);
     } else {
-      window.alert(post.message);
+      if (typeof post.message !== 'object')
+        window.alert(post.message);
+      else{
+        for (let prop in post.message)
+          window.alert(post.message[prop]);
+      }
     }
   }
   request.send(myJson);
@@ -280,7 +314,12 @@ function postDetailed() {
       }
       generatePost(postID, post.title, post.content, newLikeStr, newLikeStr.includes("You"));
     } else {
-      window.alert(post.message);
+      if (typeof post.message !== 'object')
+        window.alert(post.message);
+      else{
+        for (let prop in post.message)
+          window.alert(post.message[prop]);
+      }
     }
   }
   request.send();
@@ -320,19 +359,29 @@ function addLike(postID) {
       likeString.innerHTML = generateLikeStr(likes, output.userName);
       likeString.href = '/likeList/' + postID;
     } else {
-      window.alert(like.message);
+      if (typeof like.message !== 'object')
+        window.alert(like.message);
+      else{
+        for (let prop in like.message)
+          window.alert(like.message[prop]);
+      }
     }
   }
   request.send(myJson);
 }
 function displayInfo() {
+  emailElement = document.getElementById('email');
+  if (emailElement !== null) {
+    emailElement .value = getCookie('email');
+    deleteCookie('email');
+  }
   document.getElementById('name').value = getCookie('name');
   document.getElementById('phoneNumber').value = getCookie('phoneNumber');
   occupation = document.getElementById('occupation');
   occupationValue = getCookie('occupation');
   if (occupationValue === 'Student' || getCookie('occupation') === 'Teacher')
     occupation.value = occupationValue
-  else {
+  else if (occupationValue !== '' && occupation !== null) {
     occupation.value = 'Others';
     others = document.getElementById('others');
     others.value = occupationValue;
@@ -342,6 +391,7 @@ function displayInfo() {
   deleteCookie('phoneNumber');
   deleteCookie('occupation');
 }
+
 function updateInfo() {
   const output = {
     name: '',
@@ -373,7 +423,12 @@ function updateInfo() {
       window.alert('Update Information Successfully!');
       window.location.href = '/home';
     } else {
-      window.alert(account.message);
+      if (typeof account.message !== 'object')
+        window.alert(account.message);
+      else {
+        for (let prop in account.message)
+          window.alert(account.message[prop]);
+      }
     }
   }
   request.send(myJson);
@@ -382,5 +437,209 @@ function updateInfo() {
 function logOut() {
   deleteCookie('userName');
   deleteCookie('id');
-  window.location.href = '/login'
+  signOutGG();
+  logOutFB();
+  window.location.href = '/login';
+}
+
+function onSignInGG(googleUser) {
+  let profile = googleUser.getBasicProfile();
+  let email = profile.getEmail();
+  url = baseURL + '/account/email/' + email;
+  let request = new XMLHttpRequest();
+  request.open('GET', url, true);
+  request.setRequestHeader('Content-type','application/json; charset=utf-8');
+  request.onload = function () {
+    let account = JSON.parse(request.responseText);
+    if (request.readyState == 4 && request.status == "200") {
+      setCookie("userName", account.userName);
+        setCookie("id", account.id);
+        let updateInfoNeeded = false;
+        for (let prop in account) {
+          if (prop === 'name' || prop === 'phoneNumber' || prop === 'occupation')
+            setCookie(prop, account[prop]);
+            if (account[prop] === '')
+              updateInfoNeeded = true;
+        }
+        if (updateInfoNeeded === true)
+          window.location.href = '/updateInfo';
+        else {
+          deleteCookie('name');
+          deleteCookie('phoneNumber');
+          deleteCookie('occupation');
+          window.location.href = '/home';
+        }
+    } else {
+      if (typeof account.message !== 'object')
+        window.alert(account.message);
+      else {
+        for (let prop in account.message)
+          window.alert(account.message[prop]);
+      }
+      setCookie('email', email);
+      setCookie('name', profile.getName())
+      window.location.href = '/signup';
+    }
+  }
+  request.send();
+}
+
+function onSignUpGG(googleUser) {
+  let profile = googleUser.getBasicProfile();
+  let email = profile.getEmail();
+  url = baseURL + '/account/email/' + email;
+  let request = new XMLHttpRequest();
+  request.open('GET', url, true);
+  request.setRequestHeader('Content-type','application/json; charset=utf-8');
+  request.onload = function () {
+    let account = JSON.parse(request.responseText);
+    if (request.readyState == 4 && request.status == "200") {
+      setCookie("userName", account.userName);
+      setCookie("id", account.id);
+      let updateInfoNeeded = false;
+      for (let prop in account) {
+        if (prop === 'name' || prop === 'phoneNumber' || prop === 'occupation')
+          setCookie(prop, account[prop]);
+          if (account[prop] === '')
+            updateInfoNeeded = true;
+      }
+      if (updateInfoNeeded === true)
+        window.location.href = '/updateInfo';
+      else {
+        deleteCookie('name');
+        deleteCookie('phoneNumber');
+        deleteCookie('occupation');
+        window.location.href = '/home';
+      }
+    } else {
+      setCookie('email', email);
+      setCookie('name', profile.getName());
+      displayInfo();
+    }
+  }
+  request.send();
+}
+function signOutGG() {
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut();
+}
+
+function statusChangeCallback(response, logInPage) {  // Called with the results from FB.getLoginStatus().
+  if (response.status === 'connected') {   // Logged into your webpage and Facebook.
+    if (logInPage === true)
+      onSignInFB();
+    else
+      onSignUpFB();  
+  }                                  // Not logged into your webpage or we are unable to tell.
+}
+
+
+function checkLoginStateLogIn() {               // Called when a person is finished with the Login Button.
+  FB.getLoginStatus(function(response) {   // See the onlogin handler
+    statusChangeCallback(response, true);
+  });
+}
+
+function checkLoginStateSignUp() {               // Called when a person is finished with the Login Button.
+  FB.getLoginStatus(function(response) {   // See the onlogin handler
+    statusChangeCallback(response, false);
+  });
+}
+
+window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '1391529697889548',
+    cookie     : true,                     // Enable cookies to allow the server to access the session.
+    xfbml      : true,                     // Parse social plugins on this webpage.
+    version    : 'v10.0'           // Use this Graph API version for this call.
+  });
+
+
+  FB.getLoginStatus(function(response) {   // Called after the JS SDK has been initialized.
+    statusChangeCallback(response);        // Returns the login status.
+  });
+};
+
+function onSignInFB() {                      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
+  FB.api('/me', 'GET',{"fields":"name,email"}, function(response) {
+    let email = response.email;
+    url = baseURL + '/account/email/' + email;
+    let request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.setRequestHeader('Content-type','application/json; charset=utf-8');
+    request.onload = function () {
+      let account = JSON.parse(request.responseText);
+      if (request.readyState == 4 && request.status == "200") {
+        setCookie("userName", account.userName);
+          setCookie("id", account.id);
+          let updateInfoNeeded = false;
+          for (let prop in account) {
+            if (prop === 'name' || prop === 'phoneNumber' || prop === 'occupation')
+              setCookie(prop, account[prop]);
+              if (account[prop] === '')
+                updateInfoNeeded = true;
+          }
+          if (updateInfoNeeded === true)
+            window.location.href = '/updateInfo';
+          else {
+            deleteCookie('name');
+            deleteCookie('phoneNumber');
+            deleteCookie('occupation');
+            window.location.href = '/home';
+          }
+      } else {
+        if (typeof account.message !== 'object')
+          window.alert(account.message);
+        else {
+          for (let prop in account.message)
+            window.alert(account.message[prop]);
+        }
+        setCookie('email', email);
+        setCookie('name', response.name);
+        window.location.href = '/signup';
+      }
+    }
+    request.send();
+  });
+}
+
+function onSignUpFB() {
+  FB.api('/me', 'GET',{"fields":"name,email"}, function(response) {
+    let email = response.email;
+    url = baseURL + '/account/email/' + email;
+    let request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.setRequestHeader('Content-type','application/json; charset=utf-8');
+    request.onload = function () {
+      let account = JSON.parse(request.responseText);
+      if (request.readyState == 4 && request.status == "200") {
+        setCookie("userName", account.userName);
+        setCookie("id", account.id);
+        let updateInfoNeeded = false;
+        for (let prop in account) {
+          if (prop === 'name' || prop === 'phoneNumber' || prop === 'occupation')
+            setCookie(prop, account[prop]);
+            if (account[prop] === '')
+              updateInfoNeeded = true;
+        }
+        if (updateInfoNeeded === true)
+          window.location.href = '/updateInfo';
+        else {
+          deleteCookie('name');
+          deleteCookie('phoneNumber');
+          deleteCookie('occupation');
+          window.location.href = '/home';
+        }
+      } else {
+        setCookie('email', email);
+        setCookie('name', response.name);
+        displayInfo();
+      }
+    }
+    request.send();
+  });
+}
+
+function logOutFB() {
+    FB.logout();
 }
