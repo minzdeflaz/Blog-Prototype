@@ -18,9 +18,9 @@ class Accounts(db.Model):
 
 accountPutArgs = reqparse.RequestParser()
 accountPutArgs.add_argument("name", type=str, help="Name of the user")
-accountPutArgs.add_argument("userName", type=str, help="Username is required", required=True)
-accountPutArgs.add_argument("password", type=str, help="Password is required", required=True)
-accountPutArgs.add_argument("email", type=str, help="Email is required", required=True)
+accountPutArgs.add_argument("userName", type=str, help="Username is required.", required=True, nullable=False)
+accountPutArgs.add_argument("password", type=str, help="Password is required.", required=True, nullable=False)
+accountPutArgs.add_argument("email", type=str, help="Email is required.", required=True, nullable=False)
 accountPutArgs.add_argument("phoneNumber", type=str, help="Phone number of the user")
 accountPutArgs.add_argument("occupation", type=str, help="Occupation of the user")
 
@@ -51,10 +51,10 @@ class Posts(db.Model):
 
 
 postPutArgs = reqparse.RequestParser()
-postPutArgs.add_argument("title", type=str, help="Title is required", required=True)
-postPutArgs.add_argument("content", type=str, help="Content can't be empty", required=True)
-postPutArgs.add_argument("accID", type=int, help="Post's account ID")
-postPutArgs.add_argument("userName", type=str, help="Post's account userName")
+postPutArgs.add_argument("title", type=str, help="Title is required.", required=True, nullable=False)
+postPutArgs.add_argument("content", type=str, help="Post content can't be empty.", required=True, nullable=False)
+postPutArgs.add_argument("accID", type=int, help="Post's account ID", nullable=False)
+postPutArgs.add_argument("userName", type=str, help="Post's account userName", nullable=False)
 
 postPatchArgs = reqparse.RequestParser()
 postPatchArgs.add_argument("likeStr", type=str, help="")
@@ -77,8 +77,8 @@ class Likes(db.Model):
   userName = db.Column(db.String(100), db.ForeignKey('accounts.userName'), nullable=False)
 
 likePutArgs = reqparse.RequestParser()
-likePutArgs.add_argument("accID", type=int, help="Account ID is required", required=True)
-likePutArgs.add_argument("userName", type=str, help="UserName is required", required=True)
+likePutArgs.add_argument("accID", type=int, help="Account ID is required", required=True, nullable=False)
+likePutArgs.add_argument("userName", type=str, help="UserName is required", required=True, nullable=False)
 
 likeFields = {
   'id': fields.Integer,
@@ -115,6 +115,17 @@ class AccountQueryByUserName(Resource):
     return result
 
 api.add_resource(AccountQueryByUserName,"/account/<string:userName>")
+
+#Query Accounts table by email
+class AccountQueryByEmail(Resource):
+  @marshal_with(accountFields)
+  def get(self, email):
+    result = Accounts.query.filter_by(email=email).first()
+    if not result:
+      abort(404, message="This account has not been registered yet.")
+    return result
+
+api.add_resource(AccountQueryByEmail,"/account/email/<string:email>")
 
 #Query Accounts table with id
 class AccountQueryByID(Resource):
