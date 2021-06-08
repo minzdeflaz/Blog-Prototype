@@ -5,7 +5,7 @@ The instruction is listed as follow:
 # Introduction
 Got It would like to build a blog where people can register accounts, write blog posts, and interact with each other. This blog has the following features.
 # Accounts
-- [ ] New accounts can be registered via Facebook or Google </br>
+- [x] New accounts can be registered via Facebook or Google </br>
 - [x] If the email already exists in the system, then the user’s Facebook or Google account must be linked to the same account. For example:</br>
 - Alex has successfully registered an account with his Facebook account. The email used to sign in to his Facebook account is alex@gmail.com</br>
 - Alex tries to register another account with his Google account alex@gmail.com</br>
