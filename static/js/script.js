@@ -270,6 +270,9 @@ function logIn() {
 
 //Proccessing data for home page
 function home() {
+  //redirect to log in page if not logged in
+  if (getCookie('userName') === '') 
+    window.location.href = '/login';
   //Calling api to render posts
   userName = getCookie('userName')
   document.title = userName + "'s homepage";
@@ -304,6 +307,9 @@ function home() {
 
 //Processing data for wall page
 function wall() {
+  //redirect to log in page if not logged in
+  if (getCookie('userName') === '') 
+    window.location.href = '/login';
   //Calling api
   userName = getCookie('userName')
   document.title = userName + "'s personal page";
@@ -338,6 +344,9 @@ function wall() {
 
 //Processing data for create post page
 function createPost() {
+  //redirect to log in page if not logged in
+  if (getCookie('userName') === '') 
+    window.location.href = '/login';
   //Getting input from html
   const output = {
     userName: getCookie('userName'),
@@ -378,6 +387,9 @@ function createPost() {
 
 //Full post page
 function postDetailed() {
+  //redirect to log in page if not logged in
+  if (getCookie('userName') === '') 
+    window.location.href = '/login';
   let postID = window.location.href.split('/').pop();
   url = baseURL + '/post/' + postID;
   //Call api to get full post
@@ -407,6 +419,9 @@ function postDetailed() {
 
 //Full list of people who like
 function likeList() {
+  //redirect to log in page if not logged in
+  if (getCookie('userName') === '') 
+    window.location.href = '/login';
   let postID = window.location.href.split('/').pop()
   let likes = JSON.parse(queryLikes(postID));
   let liked = generateLikeStr(likes, getCookie('userName'), true);
@@ -455,6 +470,9 @@ function addLike(postID) {
 
 //Update account infomation page
 function updateInfo() {
+  //redirect to log in page if not logged in
+  if (getCookie('userName') === '') 
+    window.location.href = '/login';
   //Take input from html
   const output = {
     name: '',
