@@ -118,8 +118,8 @@ function getCookie(cookieName) {
     .split('; ')
     .find(row => row.startsWith(cookieName + '='));
   if (cookieValue !== undefined)
-    return cookieValue.split("=")[1];
-  return "";
+    return cookieValue.split('=')[1];
+  return '';
 }
 
 //Delete Cookie
@@ -214,6 +214,8 @@ function displayInfo() {
 
 //Processing data in log in page
 function logIn() {
+  if (getCookie('userName') !== '') 
+    window.location.href = '/home';
   //Take username and password from html input
   const input = {
     userName: '',

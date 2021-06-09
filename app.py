@@ -16,37 +16,35 @@ api.init_app(app)
 
 #Default route
 @app.route('/')
-def index():
-  if 'logged' in session.keys():
-    return redirect('/feed') 
+def index(): 
   return redirect('/login')
 
 #Sign up page
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/signup')
 def signup():
   return render_template('signup.html')
   
 #Login page
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login')
 def login():
   return render_template('login.html')
 
 #Home page
-@app.route('/home', methods=['GET','POST'])
+@app.route('/home')
 def home():
   return render_template('home.html')
 
 #Update user's info if not provided enough info
-@app.route('/updateInfo', methods=['GET', 'POST'])
+@app.route('/updateInfo')
 def updateInfo():
   return render_template('updateInfo.html')
 
 #Create new post page
-@app.route('/createPost', methods=['GET', 'POST'])
+@app.route('/createPost')
 def createPost():
   return render_template('createPost.html')
 
-#News feed page
+#Personal Posts page
 @app.route('/wall')
 def feed():
   return render_template('wall.html')
