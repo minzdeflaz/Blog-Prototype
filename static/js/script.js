@@ -168,6 +168,9 @@ function displayInfo() {
 
 //Processing data from sign up page
  function signUp() {
+  //Redirect to home if already logged in
+  if (getCookie('userName') !== '') 
+    window.location.href = '/home';
   //Getting data from html
   const output = {
     name: '',
@@ -214,6 +217,7 @@ function displayInfo() {
 
 //Processing data in log in page
 function logIn() {
+  //Redirect to home if already logged in
   if (getCookie('userName') !== '') 
     window.location.href = '/home';
   //Take username and password from html input
