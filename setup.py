@@ -1,8 +1,8 @@
 #MySQL setup:
-username = 'sql6417619'
-password = 'UuUG3TsNZv'
-server = 'sql6.freemysqlhosting.net'
-database = 'sql6417619'
+username = 'sql6418134'
+password = '355RCM6bpc'
+server = 'sql6.freesqldatabase.com'
+database = 'sql6418134'
 URI = 'mysql+pymysql://' + username + ':' + password + '@' + server + '/' + database
 
 #Secret Key
