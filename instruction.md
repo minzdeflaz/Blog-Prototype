@@ -12,6 +12,6 @@ Then go to setup.py file and change the variables based on your system.</br>
 Go to the front of script.js file to change the baseURL of your system (If you're not running on localhost:5000).</br>
 Then change facebook appID if you want to sign in with your Facebook account (This is due to Facebook has not approved my application to run publicly).</br>
 Instructions for creating a facebook appID is written [here](https://developers.facebook.com/docs/development/create-an-app/). </br>
-Run `python databaseStart.py` in the terminal to initialize your database.</br>
+If this is your first time using this website, run `python databaseStart.py` in the terminal to initialize your database.</br>
 Then type `flask run` in the terminal to activate the program.</br>
 Goto `http://localhost:5000` in the browser to see the website.</br>
