@@ -3,18 +3,17 @@
 <title>Log in</title>
 {% endblock %}
 {% block body %}
-
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v11.0&appId=1391529697889548&autoLogAppEvents=1" nonce="NXGpziIB"></script>
 <button onclick="document.location='/signup'">Sign up</button>
 <div class="login">
   <input type="text" name="userName" id="userName" placeholder="Username" />
   <input type="password" name="password" id="password" placeholder="Password" />
   <input type="submit" value="Log in" onclick="logIn()" />
 </div>
-
-<div class="g-signin2" data-onsuccess="onSignInGG"></div>
-<fb:login-button scope="public_profile, email" onlogin="checkLoginStateLogIn();">
-</fb:login-button>
-
+</br>
+<div class="g-signin2" data-onsuccess="onSignInGG" data-width="198" data-height="28" data-longtitle="true"></div>
+<div class="fb-login-button" data-width="120px" data-size="medium" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" scope="public_profile, email" onlogin="checkLoginStateLogIn();"></div>
 
 <!-- Load the JS SDK asynchronously -->
 {% endblock %}

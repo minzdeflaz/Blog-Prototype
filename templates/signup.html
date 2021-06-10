@@ -20,9 +20,9 @@
   </select>
   <input type="text" name="occupation" id="others" style='display:none;' placeholder="Occupation"/>
   <input type="submit" value="Create account" onclick="signUp()">
-  <div class="g-signin2" data-onsuccess="onSignUpGG"></div>
-  <fb:login-button scope="public_profile, email" onlogin="checkLoginStateSignUp();">
-  </fb:login-button>
+  <div class="g-signin2" data-onsuccess="onSignUpGG" data-width="198" data-height="28" data-longtitle="true"></div>
+  <div class="fb-login-button" data-width="120px" data-size="medium" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" scope="public_profile, email" onlogin="checkLoginStateSignUp();"></div>
+
   <script>displayInfo();</script>
 </div>
 {% endblock %}
