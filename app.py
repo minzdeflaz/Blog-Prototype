@@ -3,7 +3,7 @@ from flask_cors import CORS
 from api import db, api
 import setup
 
-#Configuration
+# Configuration
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = setup.URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -14,53 +14,66 @@ db.init_app(app)
 api.init_app(app)
 
 
-#Default route
+# Default route
 @app.route('/')
-def index(): 
-  return redirect('/login')
+def index():
+    return redirect('/login')
 
-#Sign up page
+# Sign up page
+
+
 @app.route('/signup')
 def signup():
-  return render_template('signup.html')
-  
-#Login page
+    return render_template('signup.html')
+
+# Login page
+
+
 @app.route('/login')
 def login():
-  return render_template('login.html')
+    return render_template('login.html')
 
-#Home page
+# Home page
+
+
 @app.route('/home')
 def home():
-  return render_template('home.html')
+    return render_template('home.html')
 
-#Update user's info if not provided enough info
+# Update user's info if not provided enough info
+
+
 @app.route('/updateInfo')
 def updateInfo():
-  return render_template('updateInfo.html')
+    return render_template('updateInfo.html')
 
-#Create new post page
+# Create new post page
+
+
 @app.route('/createPost')
 def createPost():
-  return render_template('createPost.html')
+    return render_template('createPost.html')
 
-#Personal Posts page
+# Personal Posts page
+
+
 @app.route('/wall')
 def feed():
-  return render_template('wall.html')
+    return render_template('wall.html')
 
 
-
-#Post detailed page
+# Post detailed page
 @app.route('/postDetailed/<int:id>')
 def post(id):
-  return render_template('post.html')
+    return render_template('post.html')
 
-#Like list
+# Like list
+
+
 @app.route('/likeList/<int:postID>')
 def likeList(postID):
-  return render_template('likeList.html')
+    return render_template('likeList.html')
 
 
 if __name__ == "__main__":
-  app.run(debug=True)
+    app.run(debug=True)
